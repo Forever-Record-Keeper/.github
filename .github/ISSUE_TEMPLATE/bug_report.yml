@@ -1,0 +1,45 @@
+name: Bug report
+description: Something works in a different way than the docs say.
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report security problems in private. The security policy of the organization explains how.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: Describe what you saw.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: Describe what you expected to see.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps
+      description: List the steps that show the problem.
+      placeholder: |
+        1. Start the game.
+        2. Enter a dungeon.
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The version of Forever Record Keeper, and of the game client if it matters.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log lines
+      description: Paste the lines of the app log around the problem. Remove names of other players first.
+      render: text
