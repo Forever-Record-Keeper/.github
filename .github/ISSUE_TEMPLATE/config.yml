@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security problem
+    url: https://github.com/Forever-Record-Keeper/.github/blob/main/SECURITY.md
+    about: Report security problems in private. Don't open a public issue.

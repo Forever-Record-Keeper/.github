@@ -1,0 +1,28 @@
+name: Idea
+description: Suggest new behavior or a change to existing behavior.
+labels:
+  - idea
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A change to behavior starts as a plan in the specs repo. The maintainer moves this issue there if needed.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the problem that the idea solves. Name who has the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Idea
+      description: Describe the behavior that you suggest.
+    validations:
+      required: true
+  - type: textarea
+    id: other-options
+    attributes:
+      label: Other options
+      description: Describe other ways to solve the problem, if you know any.
