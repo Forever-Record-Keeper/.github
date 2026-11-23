@@ -53,7 +53,7 @@ Both rules had 0 hits in this run, so both stay on.
   The 2 documents score grade 5.1 and 6.7 as a whole, which hides the dense paragraphs.
   Without a minimum, 34 paragraphs score above grade 9.
   Most of them are short, and a short paragraph is too small a sample for the formula.
-  For example, a 7-word sentence with 2 long words scores grade 10.7.
+  For example, grade 10.7 is the score of a 7-word sentence with 2 long words.
   With the 40-word minimum, 6 paragraphs score above grade 9, all in the product spec.
 - `FRK.HeadingCase` replaces `ai-tells-experimental.HeadingTitleCase`.
   Vale gives vocabulary exceptions only to styles in `BasedOnStyles`, so the experimental rule flagged names such as `OpenSpec`.
