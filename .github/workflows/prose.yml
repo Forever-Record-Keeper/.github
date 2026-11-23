@@ -1,0 +1,60 @@
+# Reusable prose gate: runs Vale with the FRK package on the calling repo.
+# The calling repo needs a .vale.ini that names the FRK package (see README.md of this repo).
+name: Prose
+
+on:
+  workflow_call:
+    inputs:
+      vale-version:
+        description: Vale release to install. This default is the one version for all FRK repos.
+        type: string
+        default: "3.28.1"
+      paths:
+        description: Files or folders for Vale to check, separated by spaces.
+        type: string
+        default: "."
+      rule-tests:
+        description: Folder with Vale rule tests to run with coverage. Leave empty to skip them.
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  vale:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Vale
+        env:
+          VALE_VERSION: ${{ inputs.vale-version }}
+        run: |
+          cd "${RUNNER_TEMP}"
+          base="https://github.com/errata-ai/vale/releases/download/v${VALE_VERSION}"
+          archive="vale_${VALE_VERSION}_Linux_64-bit.tar.gz"
+          checksums="vale_${VALE_VERSION}_checksums.txt"
+          curl --fail --silent --show-error --location --remote-name "${base}/${archive}"
+          curl --fail --silent --show-error --location --remote-name "${base}/${checksums}"
+          grep " ${archive}\$" "${checksums}" | sha256sum --check --strict -
+          mkdir -p vale-bin
+          tar -xzf "${archive}" -C vale-bin vale
+          echo "${RUNNER_TEMP}/vale-bin" >> "${GITHUB_PATH}"
+
+      - name: Sync Vale packages
+        run: vale sync
+
+      - name: Test Vale rules
+        if: inputs.rule-tests != ''
+        env:
+          RULE_TESTS: ${{ inputs.rule-tests }}
+        run: vale test --coverage "${RULE_TESTS}"
+
+      - name: Check prose
+        env:
+          PATHS: ${{ inputs.paths }}
+        # PATHS stays unquoted on purpose, so that a list of paths splits into arguments.
+        run: vale --minAlertLevel=warning ${PATHS}

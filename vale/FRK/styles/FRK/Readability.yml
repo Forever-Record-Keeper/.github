@@ -1,0 +1,29 @@
+# Readability metric from the handover: Flesch-Kincaid grade, as a warning.
+# Scored per paragraph, because a whole-document score hides dense paragraphs.
+# The formula needs a sample of several sentences: a 7-word sentence with 2 long words
+# already scores above grade 10. So the rule skips paragraphs with fewer than 40 words.
+# vale/CALIBRATION.md has the numbers behind both limits.
+extends: metric
+message: "Reading grade %s is above the limit. Use shorter sentences and common words."
+level: warning
+scope: paragraph
+formula: round(flesch_kincaid, 1)
+condition: "> 9.0 && words >= 40.0"
+tests:
+  - name: fails on a dense paragraph
+    input: >-
+      The implementation of the aforementioned synchronization methodology necessitates
+      considerable computational infrastructure. Comprehensive instrumentation of
+      asynchronous communication between independent processes introduces additional
+      operational complexity. Organizational capabilities regarding technological
+      infrastructure determine the feasibility of the proposed architecture. Subsequent
+      evaluation necessitates systematic documentation of the identified dependencies.
+    contains: FRK.Readability
+  - name: passes on a short sentence with long words and on a plain paragraph
+    input: |
+      Report security problems in private, through GitHub.
+
+      The app starts the recording when the game starts. It stops the recording 2 min
+      after the game ends. The app reads the combat log and the chat log. It adds a
+      chapter for each pull. The library shows the video next to the log.
+    want: ''

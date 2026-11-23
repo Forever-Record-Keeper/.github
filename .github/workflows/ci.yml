@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  prose:
+    uses: ./.github/workflows/prose.yml
+    with:
+      rule-tests: vale/FRK/styles

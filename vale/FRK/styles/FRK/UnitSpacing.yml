@@ -1,0 +1,13 @@
+# Plain English rule 11: numbers with units, written "2 min" and "40 Mbps".
+extends: existence
+message: "Number and unit: '%s'. Put a space between them, for example '2 min'."
+level: error
+raw:
+  - '\b\d+(?:\.\d+)?(?:ms|s|min|h|KB|MB|GB|TB|Kbps|Mbps|Gbps|fps|Hz|kHz|px)\b'
+tests:
+  - name: fails on a unit without a space
+    input: The cap is 40Mbps at 60fps.
+    contains: "'40Mbps'"
+  - name: passes on a unit with a space and a codec name
+    input: The cap is 40 Mbps at 60 fps with x264 or H.264.
+    want: ''

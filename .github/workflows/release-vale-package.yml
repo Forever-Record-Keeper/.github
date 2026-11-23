@@ -1,0 +1,42 @@
+# Builds FRK.zip from vale/FRK and attaches it to a release.
+# Start it with a tag such as vale-frk-v0.1.0. Other repos pin that release URL in .vale.ini.
+name: Release Vale package
+
+on:
+  push:
+    tags:
+      - "vale-frk-v*"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    uses: ./.github/workflows/prose.yml
+    with:
+      rule-tests: vale/FRK/styles
+
+  release:
+    needs: test
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build FRK.zip
+        # Vale needs 1 top folder in the archive, named like the package.
+        run: |
+          cd vale
+          zip --recurse-paths "${RUNNER_TEMP}/FRK.zip" FRK
+
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: >
+          gh release create "${TAG}" "${RUNNER_TEMP}/FRK.zip"
+          --title "${TAG}"
+          --notes "Pin this package in .vale.ini: https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/FRK.zip"

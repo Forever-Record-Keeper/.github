@@ -1,0 +1,37 @@
+# Plain English rule 5: no idioms and no figures of speech.
+# ai-tells catches many idioms. This list holds the ones it misses.
+extends: existence
+message: "Idiom: '%s'. Say what you mean in plain words."
+level: error
+ignorecase: true
+tokens:
+  - out of the box
+  - under the hood
+  - on the fly
+  - low-hanging fruit
+  - going forward
+  - in a nutshell
+  - deep dive
+  - silver bullet
+  - game[- ]changer
+  - rule of thumb
+  - first-class citizen
+  - touch base
+  - no-brainer
+  - circle back
+  - ball is in (?:your|our|their) court
+  - hits? the ground running
+  - best of both worlds
+  - think outside the box
+  - moving target
+  - two birds with one stone
+  - on the same page
+  - piece of cake
+  - bite the bullet
+tests:
+  - name: fails on an idiom
+    input: The wizard works out of the box.
+    contains: "'out of the box'"
+  - name: passes on plain words
+    input: The wizard works without extra setup.
+    want: ''

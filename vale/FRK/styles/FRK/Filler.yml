@@ -1,0 +1,26 @@
+# Plain English rule 8: no filler and no intensifiers.
+# ai-tells covers robust, seamless, comprehensive, crucial and "worth noting".
+# This list holds the short fillers it misses.
+extends: existence
+message: "Filler: '%s'. Delete it."
+level: warning
+ignorecase: true
+tokens:
+  - simply
+  - just
+  - really
+  - very
+  - basically
+  - actually
+  - quite
+  - obviously
+  - totally
+  - extremely
+  - literally
+tests:
+  - name: fails on a filler word
+    input: The app just starts the recording.
+    contains: "'just'"
+  - name: passes without filler
+    input: The app starts the recording.
+    want: ''

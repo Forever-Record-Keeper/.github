@@ -1,0 +1,23 @@
+# Plain English rule 10: no rhetorical questions.
+# Flags a question mark in a body paragraph. Headings, list items and table cells
+# often hold real questions (FAQ entries, form labels), so the rule leaves them alone.
+# A question mark inside quotes, such as a UI label "Start recording?", stays allowed.
+extends: existence
+message: "Question in body text. State the point as a sentence."
+level: warning
+scope: paragraph
+nonword: true
+raw:
+  - '\?(?=\s|$)'
+tests:
+  - name: fails on a question in a paragraph
+    input: Why does the log matter? The log has the pulls.
+    contains: FRK.Questions
+  - name: passes on a heading, a list item and a quoted label
+    input: |
+      ## Why does the log matter?
+
+      - Which store name do we use?
+
+      The reminder shows "Start recording?" with 3 buttons.
+    want: ''

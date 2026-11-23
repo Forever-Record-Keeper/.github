@@ -1,0 +1,18 @@
+# Decision 15: US spelling.
+# Vale's built-in dictionary also accepts British spellings such as "licence".
+# en_US is the strict SCOWL dictionary (size 60), which keeps one variant per word.
+# frk adds ordinary technical words that en_US misses, such as "repo" and "remux".
+# Names with a fixed spelling, such as "ESLint", go into the FRK vocabulary.
+extends: spelling
+message: "Spelling: '%s' is not US English, not in the frk dictionary and not in the vocabulary."
+level: error
+dictionaries:
+  - en_US
+  - frk
+tests:
+  - name: fails on a British spelling
+    input: The licence needs authorisation.
+    contains: "'licence'"
+  - name: passes on US spelling and frk words in any case
+    input: The license needs authorization. Repos remux the video. Each repo has a roadmap.
+    want: ''

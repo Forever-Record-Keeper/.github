@@ -1,0 +1,19 @@
+# Plain English rule 7: no dashes as sentence punctuation.
+# Flags every em dash, and a hyphen or an en dash with spaces on both sides.
+# Ranges without spaces, such as "1–3 s" or "01:00–07:00", stay allowed.
+# ai-tells.EmDashUsage is off, because it also flags those ranges.
+extends: existence
+message: "Dash as punctuation: '%s'. Use a period, a comma, a colon or parentheses."
+level: error
+nonword: true
+raw:
+  - '—|\S\s+[-–]\s+\S'
+tests:
+  - name: fails on an em dash and a spaced hyphen
+    input: The app starts — then it waits. The app stops - then it ends.
+    want: |
+      1:16:FRK.Dashes:Dash as punctuation: '—'. Use a period, a comma, a colon or parentheses.
+      1:45:FRK.Dashes:Dash as punctuation: 's - t'. Use a period, a comma, a colon or parentheses.
+  - name: passes on ranges and compound words
+    input: The log ends 1–3 s after the loading screen. Compression runs from 01:00–07:00 at a well-known time.
+    want: ''

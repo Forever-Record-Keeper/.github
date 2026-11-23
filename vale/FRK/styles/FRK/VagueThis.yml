@@ -1,0 +1,16 @@
+# Plain English rule 9: no pronoun without a clear noun.
+# Flags a sentence that starts with "This", "That", "These" or "Those" and a verb.
+# "This file is ..." stays allowed, because a noun follows the pronoun.
+extends: existence
+message: "Unclear pronoun: '%s'. Name the thing, for example 'The cache allows'."
+level: warning
+scope: sentence
+raw:
+  - '^(?:This|That|These|Those)\s+(?:is|are|was|were|has|have|had|will|would|can|could|should|may|might|must|does|do|did|allows?|means?|makes?|lets?|helps?|gives?|keeps?|ensures?|enables?|works?|needs?|requires?|causes?|leads?|shows?|happens?|adds?|gets?|goes|runs?|sets?|stops?|starts?|avoids?|prevents?|explains?)\b'
+tests:
+  - name: fails on a bare pronoun
+    input: The app reads the log. That means less work.
+    contains: "'That means'"
+  - name: passes on a named subject
+    input: The app reads the log. The log gives the pull times.
+    want: ''

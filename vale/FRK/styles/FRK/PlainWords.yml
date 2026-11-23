@@ -1,0 +1,35 @@
+# Plain English rule 3: common words.
+# ai-tells.FormalRegister is off, because it also flags standard software verbs
+# such as "implement", "optimize" and "minimize". This list keeps the formal words.
+extends: substitution
+message: "Plain word: use a form of '%s' instead of '%s'."
+level: error
+ignorecase: true
+swap:
+  utiliz(?:e|es|ed|ing|ation): use
+  facilitat(?:e|es|ed|ing|ion): help
+  commenc(?:e|es|ed|ing): start
+  terminat(?:e|es|ed|ing): end
+  ascertain(?:s|ed|ing)?: find out
+  conceptualiz(?:e|es|ed|ing): design
+  operationaliz(?:e|es|ed|ing): start using
+  incentiviz(?:e|es|ed|ing): reward
+  prior to: before
+  in the event that: if
+  with regard to: about
+  assist(?:s|ed|ing)?: help
+  obtain(?:s|ed|ing)?: get
+  initiat(?:e|es|ed|ing): start
+  approximately: about
+  endeavou?r(?:s|ed|ing)?: try
+  sufficient: enough
+  a number of: some
+  whilst: while
+  amongst: among
+tests:
+  - name: fails on a formal word
+    input: Close the game prior to the update.
+    contains: "'prior to'"
+  - name: passes on common words and software verbs
+    input: Close the game before the update. The app implements the scenario.
+    want: ''

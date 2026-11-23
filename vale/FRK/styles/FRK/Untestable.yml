@@ -1,0 +1,18 @@
+# Plain English rule 13: requirements avoid words that a test can't check.
+# Applies to sentences with SHALL (requirements) or THEN (scenario outcomes).
+extends: existence
+message: "Untestable word in a requirement: '%s'. Name a value that a test can check."
+level: error
+scope: sentence
+raw:
+  - '(?i:\b(?:fast|quick(?:ly)?|slow(?:ly)?|easy|easily|simple|user-friendly|intuitive|as needed|if possible|as appropriate|etc|and/or|efficient(?:ly)?|flexible|reasonable|adequate|normally|usually|often|soon)\b)(?:(?<=\b(?:SHALL|THEN)\b.*)|(?=.*\b(?:SHALL|THEN)\b))'
+tests:
+  - name: fails on an untestable word in a requirement
+    input: The app SHALL start the recording fast.
+    contains: "'fast'"
+  - name: passes on a measurable requirement and plain prose
+    input: |
+      The app SHALL start the recording within 2 s.
+
+      Seeking is fast with HLS.
+    want: ''

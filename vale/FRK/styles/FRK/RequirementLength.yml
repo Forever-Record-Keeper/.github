@@ -1,0 +1,19 @@
+# Plain English rule 1: a requirement has 20 words or fewer.
+# A requirement is a sentence with the keyword SHALL (EARS form).
+# The pattern counts 21 or more space-separated tokens in such a sentence.
+extends: existence
+message: "Requirement with more than 20 words. Split it, or move the detail into a scenario."
+level: error
+scope: sentence
+raw:
+  - '^(?=.*\bSHALL\b)(?:\S+\s+){20}\S+'
+tests:
+  - name: fails on a 21-word requirement
+    input: When the game exits and the grace period of 2 min ends without a restart, the app SHALL stop the recording and notify.
+    contains: FRK.RequirementLength
+  - name: passes on a short requirement and long prose without SHALL
+    input: |
+      When an encounter ends, the app SHALL add a chapter marker.
+
+      This sentence has no requirement keyword, so it may run longer than twenty words without this rule ever flagging it.
+    want: ''

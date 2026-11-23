@@ -1,0 +1,16 @@
+# Plain English rule 6: no contrast framing.
+# ai-tells catches "X, not Y", "not only ... but also" and "It isn't X. It's Y."
+# This rule catches "not just X, but Y" and its variants.
+extends: existence
+message: "Contrast framing: '%s'. Say what the thing is and does."
+level: error
+scope: sentence
+raw:
+  - '(?i)\bnot (?:just|merely|simply)\b[^.!?]*?\bbut\b'
+tests:
+  - name: fails on not just ... but
+    input: The library is not just a player, but a log viewer.
+    contains: FRK.NotJustBut
+  - name: passes on a plain statement
+    input: The library plays the video and shows the log.
+    want: ''
