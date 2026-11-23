@@ -10,8 +10,8 @@ This file records each change to such a rule, and the reason for the change.
 - Text: 2 planning documents of the project, 860 lines in total.
   Both documents are private, so this file quotes no lines from them.
 - First run: 578 alerts.
-  Final run, after the changes below: 402 alerts.
-  Of these, 243 are errors.
+  Final run, after the changes below: 312 alerts.
+  Of these, 181 are errors.
 
 ### Rules turned off
 
@@ -49,8 +49,12 @@ Both rules had 0 hits in this run, so both stay on.
   All 11 hits were real questions in lists, in table headers or in a bold label.
 - `FRK.SentenceLength` is an error now.
   All 13 hits had more than 25 words.
-- `FRK.Readability` scores each paragraph.
-  The 2 documents score grade 5.1 and 6.7 as a whole, but 34 paragraphs score above grade 9.
+- `FRK.Readability` scores each paragraph with 40 words or more.
+  The 2 documents score grade 5.1 and 6.7 as a whole, which hides the dense paragraphs.
+  Without a minimum, 34 paragraphs score above grade 9.
+  Most of them are short, and a short paragraph is too small a sample for the formula.
+  For example, a 7-word sentence with 2 long words scores grade 10.7.
+  With the 40-word minimum, 6 paragraphs score above grade 9, all in the product spec.
 - `FRK.HeadingCase` replaces `ai-tells-experimental.HeadingTitleCase`.
   Vale gives vocabulary exceptions only to styles in `BasedOnStyles`, so the experimental rule flagged names such as `OpenSpec`.
 
@@ -58,9 +62,10 @@ Both rules had 0 hits in this run, so both stay on.
 
 `FRK.Spelling` uses the strict en_US dictionary, because the built-in dictionary accepts British spellings.
 The first run had 305 spelling hits.
-The `frk` dictionary and the `FRK` vocabulary bring them down to 155 hits of 32 words:
+The `frk` dictionary and the `FRK` vocabulary bring them down to 94 hits of 28 words:
 
-- 16 domain words, such as `addon`, `guildmate` and `keybind`. These words belong in the glossary of the `specs` repo.
+- 6 terms of the project, such as `guildmate` and `keybind`. These terms belong in the glossary of the `specs` repo.
+- 6 names of games and services, such as `Archon` and `WCL`. These names go into the `FRK` vocabulary when our own texts use them.
 - 6 names of people.
 - 5 informal or Latin words, such as `et al.` and `comms`. These hits are correct.
 - 4 British spellings, such as `licence`. These hits are correct.
@@ -68,6 +73,6 @@ The `frk` dictionary and the `FRK` vocabulary bring them down to 155 hits of 32 
 
 ### Open points
 
-- Readability limit: per paragraph, grade 9 flags 3 paragraphs in 1 document and 31 in the other.
+- Readability limit: grade 9 per paragraph flags 6 paragraphs in the product spec.
   The rule stays a warning until the rewritten specs give a better sample.
-- The glossary in the `specs` repo will add the domain words to a second vocabulary.
+- The glossary in the `specs` repo will add the project terms to a second vocabulary.

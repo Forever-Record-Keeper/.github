@@ -45,4 +45,5 @@ TypeScript
 Vale
 Vitest
 Vue
+Warcraft
 Windows
