@@ -18,7 +18,8 @@ jobs:
 
   release:
     needs: test
-    runs-on: ubuntu-24.04
+    # A tag push comes only from people with write access, so the fork variable is not needed.
+    runs-on: ${{ fromJSON(vars.FRK_RUNS_ON) }}
     permissions:
       contents: write
     steps:

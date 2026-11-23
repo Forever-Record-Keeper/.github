@@ -23,7 +23,14 @@ permissions:
 
 jobs:
   vale:
-    runs-on: ubuntu-24.04
+    # The organization variables FRK_RUNS_ON and FRK_RUNS_ON_FORKS hold the runs-on value as JSON.
+    # A PR from a fork always uses FRK_RUNS_ON_FORKS. If that variable is missing, the job
+    # fails to start, so code from a fork never falls through to the self-hosted runners.
+    runs-on: >-
+      ${{ fromJSON(
+        github.event.pull_request.head.repo.fork && vars.FRK_RUNS_ON_FORKS
+        || !github.event.pull_request.head.repo.fork && vars.FRK_RUNS_ON
+        || '') }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

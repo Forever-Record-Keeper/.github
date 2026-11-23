@@ -53,6 +53,20 @@ An alert at the error level fails the check.
 The default of the `vale-version` input sets the Vale version for all repos.
 Install the same version on your machine, for example with `winget install errata-ai.Vale` on Windows.
 
+## Runners
+
+2 organization variables select the runners for the shared workflows.
+Each variable holds the `runs-on` value as JSON.
+
+| Variable | Used for | Example |
+| --- | --- | --- |
+| `FRK_RUNS_ON` | Pushes, tags and PRs from branches of the repo | `["self-hosted","frk"]` |
+| `FRK_RUNS_ON_FORKS` | PRs from forks | `"ubuntu-24.04"` |
+
+`FRK_RUNS_ON_FORKS` must hold a GitHub-hosted runner.
+Then code from a fork never runs on the self-hosted runners.
+A job fails to start if its variable is missing.
+
 ## License
 
 MIT, see [LICENSE](LICENSE).
