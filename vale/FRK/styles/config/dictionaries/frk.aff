@@ -1,0 +1,26 @@
+SET UTF-8
+
+# Affix rules for frk.dic, the ordinary technical words that the strict en_US dictionary misses.
+# Names with a fixed spelling go into the FRK vocabulary instead.
+
+# S: plural or third person (repo, repos)
+SFX S N 1
+SFX S 0 s .
+
+# E: plural after x, s, sh or ch (remux, remuxes)
+SFX E N 1
+SFX E 0 es .
+
+# M: possessive (repo, repo's)
+SFX M N 1
+SFX M 0 's .
+
+# D: past tense (remux, remuxed; transcode, transcoded)
+SFX D N 2
+SFX D 0 ed [^e]
+SFX D 0 d e
+
+# G: present participle (remux, remuxing; transcode, transcoding)
+SFX G N 2
+SFX G 0 ing [^e]
+SFX G e ing e

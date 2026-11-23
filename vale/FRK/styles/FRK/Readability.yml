@@ -1,0 +1,16 @@
+# Readability metric from the handover: Flesch-Kincaid grade, as a warning.
+# Scored per paragraph. A whole-document score hides dense paragraphs (see vale/CALIBRATION.md).
+extends: readability
+message: "Reading grade %s is above the limit. Use shorter sentences and common words."
+level: warning
+scope: paragraph
+grade: 9
+metrics:
+  - Flesch-Kincaid
+tests:
+  - name: fails on dense prose
+    input: Comprehensive multidimensional instrumentation necessitates sophisticated architectural considerations regarding asynchronous synchronization methodologies.
+    contains: FRK.Readability
+  - name: passes on plain prose
+    input: The app starts the recording. It stops when the game ends.
+    want: ''

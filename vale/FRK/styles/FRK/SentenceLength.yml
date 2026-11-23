@@ -1,0 +1,15 @@
+# Plain English rule 1: other prose has 25 words or fewer per sentence.
+# RequirementLength sets the tighter limit for requirements.
+extends: occurrence
+message: "Long sentence. Split it into shorter sentences with one idea each."
+level: error
+scope: sentence
+max: 25
+token: '\b[\w''’-]+\b'
+tests:
+  - name: fails on a 26-word sentence
+    input: The app reads the combat log and the chat log, then writes the chapters and the sidecar file next to the video, so the library can show them later.
+    contains: FRK.SentenceLength
+  - name: passes on short sentences
+    input: The app reads the combat log and the chat log. Then it writes the chapters next to the video.
+    want: ''

@@ -1,0 +1,8 @@
+# Project cases: these run with the full package configuration, including the vocabulary.
+- name: passes on vocabulary names in a heading
+  about: Vale adds vocabulary terms to the exceptions of every style in BasedOnStyles.
+  input: |
+    ## Setup for OpenSpec and Forever Record Keeper
+
+    The text is short.
+  absent: FRK.HeadingCase

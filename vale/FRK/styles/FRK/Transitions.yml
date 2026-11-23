@@ -1,0 +1,44 @@
+# Plain English rule 3: common words, applied to sentence connectors.
+# ai-tells.FormalTransitions is off, because it also flags plain connectors
+# such as "for example", "as a result" and "in particular".
+# This list keeps only the formal ones.
+extends: existence
+message: "Formal connector: '%s'. Use 'and', 'but' or 'so', or start a new sentence."
+level: error
+ignorecase: true
+tokens:
+  - moreover
+  - furthermore
+  - additionally
+  - consequently
+  - subsequently
+  - nevertheless
+  - nonetheless
+  - conversely
+  - accordingly
+  - hence
+  - thus
+  - therefore
+  - thereby
+  - henceforth
+  - notably
+  - importantly
+  - crucially
+  - what's more
+  - what is more
+  - not to mention
+  - to top it off
+  - that's not all
+  - better yet
+  - equally important
+  - in light of (?:this|that)
+  - case in point
+  - along the same lines
+  - in the same vein
+tests:
+  - name: fails on a formal connector
+    input: The app reads the log. Moreover, it reads the chat log.
+    contains: "'Moreover'"
+  - name: passes on plain connectors
+    input: The app reads the log. It also reads the chat log, for example the loot lines.
+    want: ''

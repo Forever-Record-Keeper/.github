@@ -1,0 +1,16 @@
+# Plain English rule 12: headings in sentence case.
+# Names from the vocabulary keep their capitals.
+# ai-tells-experimental.HeadingTitleCase does the same check, but Vale gives vocabulary
+# exceptions only to styles in BasedOnStyles, so the FRK style carries its own rule.
+extends: capitalization
+message: "Heading in title case: '%s'. Use sentence case."
+level: error
+scope: heading
+match: $sentence
+tests:
+  - name: fails on a title-case heading
+    input: '## Setting Up The Recorder'
+    contains: FRK.HeadingCase
+  - name: passes on a sentence-case heading
+    input: '## Plain rules for the recorder'
+    want: ''

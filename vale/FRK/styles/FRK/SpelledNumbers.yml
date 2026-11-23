@@ -1,0 +1,44 @@
+# Plain English rule 11: numbers as digits.
+# "one" stays allowed, because it often works as a pronoun ("one of the files").
+extends: existence
+message: "Number as a word: '%s'. Write it as digits."
+level: warning
+ignorecase: true
+tokens:
+  - two
+  - three
+  - four
+  - five
+  - six
+  - seven
+  - eight
+  - nine
+  - ten
+  - eleven
+  - twelve
+  - thirteen
+  - fourteen
+  - fifteen
+  - sixteen
+  - seventeen
+  - eighteen
+  - nineteen
+  - twenty
+  - thirty
+  - forty
+  - fifty
+  - sixty
+  - seventy
+  - eighty
+  - ninety
+  - hundred
+  - thousand
+  - million
+  - billion
+tests:
+  - name: fails on a spelled number
+    input: The roadmap has seven phases.
+    contains: "'seven'"
+  - name: passes on digits
+    input: The roadmap has 7 phases. One of them is a test.
+    want: ''
