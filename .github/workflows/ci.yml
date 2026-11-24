@@ -14,3 +14,8 @@ jobs:
     uses: ./.github/workflows/prose.yml
     with:
       rule-tests: vale/FRK/styles
+
+  tooling:
+    uses: ./.github/workflows/typescript.yml
+    with:
+      working-directory: tooling

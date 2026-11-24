@@ -42,6 +42,7 @@ React
 Stryker
 tmux
 TypeScript
+typescript-eslint
 Vale
 Vitest
 Vue

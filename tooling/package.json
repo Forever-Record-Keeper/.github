@@ -1,0 +1,89 @@
+{
+  "name": "@forever-record-keeper/tooling",
+  "version": "0.1.0",
+  "description": "Shared checks and configs for the TypeScript repos of Forever Record Keeper",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Forever-Record-Keeper/.github.git",
+    "directory": "tooling"
+  },
+  "packageManager": "pnpm@12.23.0",
+  "engines": {
+    "node": "^26"
+  },
+  "bin": {
+    "frk": "dist/cli.js"
+  },
+  "exports": {
+    "./eslint": {
+      "types": "./dist/eslint.d.ts",
+      "default": "./dist/eslint.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest.d.ts",
+      "default": "./dist/vitest.js"
+    },
+    "./stryker": {
+      "types": "./dist/stryker.d.ts",
+      "default": "./dist/stryker.js"
+    },
+    "./dependency-cruiser": {
+      "types": "./dist/dependency-cruiser.d.ts",
+      "default": "./dist/dependency-cruiser.js"
+    },
+    "./limits": {
+      "types": "./dist/limits.d.ts",
+      "default": "./dist/limits.js"
+    },
+    "./tsconfig.base.json": "./configs/tsconfig.base.json"
+  },
+  "files": [
+    "configs",
+    "dist",
+    "!dist/**/*.test.*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run --coverage",
+    "duplication": "node src/cli.ts duplication src test",
+    "deadcode": "knip",
+    "layers": "depcruise src",
+    "mutation": "node src/cli.ts mutation"
+  },
+  "dependencies": {
+    "@eslint/js": "10.0.1",
+    "jscpd": "5.4.3",
+    "typescript-eslint": "8.74.0"
+  },
+  "peerDependencies": {
+    "@stryker-mutator/core": "10.1.1",
+    "@stryker-mutator/typescript-checker": "10.1.1",
+    "@stryker-mutator/vitest-runner": "10.1.1",
+    "@vitest/coverage-v8": "5.1.1",
+    "dependency-cruiser": "18.9.0",
+    "eslint": "10.15.0",
+    "knip": "6.48.0",
+    "typescript": "6.0.3",
+    "vitest": "5.1.1"
+  },
+  "devDependencies": {
+    "@stryker-mutator/api": "10.1.1",
+    "@stryker-mutator/core": "10.1.1",
+    "@stryker-mutator/typescript-checker": "10.1.1",
+    "@stryker-mutator/vitest-runner": "10.1.1",
+    "@types/node": "26.6.6",
+    "@vitest/coverage-v8": "5.1.1",
+    "dependency-cruiser": "18.9.0",
+    "eslint": "10.15.0",
+    "knip": "6.48.0",
+    "typescript": "6.0.3",
+    "vitest": "5.1.1"
+  }
+}

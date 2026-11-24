@@ -1,0 +1,78 @@
+name: TypeScript checks
+
+# Runs the checks of decision 0009 on 1 TypeScript package.
+# The package defines the scripts that the steps call. The README of the
+# tooling package lists them.
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: The folder of the package, relative to the repo root.
+        type: string
+        default: .
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # The mutation check compares the PR with its base branch.
+          fetch-depth: 0
+
+      # Reads the pnpm version from packageManager in package.json.
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          package_json_file: ${{ inputs.working-directory }}/package.json
+
+      # Reads the Node.js version from engines in package.json.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: ${{ inputs.working-directory }}/package.json
+
+      - name: Install
+        id: install
+        run: pnpm install --frozen-lockfile
+
+      # Each check runs after a failed check too, so that 1 run shows all failures.
+      - name: Types
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm run typecheck
+
+      - name: Lint and limits
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm run lint
+
+      - name: Tests and coverage
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm run test
+
+      - name: Duplication
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm run duplication
+
+      - name: Dead code
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm run deadcode
+
+      - name: Layers
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm run layers
+
+      - name: Build
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        run: pnpm run build
+
+      - name: Mutation tests on changed files
+        if: ${{ !cancelled() && steps.install.outcome == 'success' && github.event_name == 'pull_request' }}
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+        run: pnpm run mutation --base "${BASE_REF}"
