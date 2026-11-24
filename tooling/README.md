@@ -1,7 +1,7 @@
 # Tooling of Forever Record Keeper
 
 The npm package `@forever-record-keeper/tooling` holds the shared checks and configurations for the TypeScript repos of the project.
-Decision 0009 in the `specs` repo sets the limits.
+Decision 0030 in the `specs` repo sets the limits.
 `src/limits.ts` holds them, and each configuration and command reads them from there.
 
 ## Contents
@@ -12,11 +12,21 @@ Decision 0009 in the `specs` repo sets the limits.
 | `@forever-record-keeper/tooling/vitest` | `frkVitestConfig`: tests next to the code, and the coverage limit for lines and branches. |
 | `@forever-record-keeper/tooling/stryker` | `frkStrykerConfig`: mutation tests with Vitest and the type checker, and the mutation limit. |
 | `@forever-record-keeper/tooling/dependency-cruiser` | `frkDependencyCruiserConfig`: no cycles and no unresolved imports, plus the layer rules of the repo. |
-| `@forever-record-keeper/tooling/limits` | `LIMITS`: the limits of decision 0009. |
+| `@forever-record-keeper/tooling/limits` | `LIMITS`: the limits of decision 0030. |
 | `@forever-record-keeper/tooling/tsconfig.base.json` | The strict compiler options for all TypeScript code. |
 
 Each configuration function takes an optional `Layout` for a repo with other folders.
 The default layout keeps the sources and the tests in `src`, and test files end in `.test.ts`.
+
+## Rules for test files
+
+- Each test is in a `describe` section, and sections nest up to the limit `testSectionDepth`.
+  Name each section after the unit that it tests, and give each test a short title that states 1 behavior.
+- Inside a section, tests use `it`, so that a title reads as a sentence, such as `jscpdArgs › skips the ignored folders`.
+- A test file has its own length limit, `testFileLines`.
+- The function length rule `frk/max-lines-per-function` skips the callbacks of `describe` and `suite`.
+  Each test inside a section keeps the function limit.
+  The rule counts only the lines with code, so blank lines and comment lines never count.
 
 ## The `frk` command
 

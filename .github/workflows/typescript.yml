@@ -1,6 +1,6 @@
 name: TypeScript checks
 
-# Runs the checks of decision 0009 on 1 TypeScript package.
+# Runs the checks of decision 0030 on 1 TypeScript package.
 # The package defines the scripts that the steps call. The README of the
 # tooling package lists them.
 

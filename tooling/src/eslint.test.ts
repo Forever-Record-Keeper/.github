@@ -1,98 +1,147 @@
+import { join } from 'node:path';
 import { isDeepStrictEqual } from 'node:util';
-import { ESLint, type Linter } from 'eslint';
-import { expect, test } from 'vitest';
-import tseslint from 'typescript-eslint';
-import { frkEslintConfig, JAVASCRIPT_FILES, limitRules } from './eslint.ts';
-import { DEFAULT_LAYOUT } from './layout.ts';
+import { ESLint } from 'eslint';
+import { describe, expect, it } from 'vitest';
+import { errorRules, lines } from '../test/lint.ts';
+import { frkEslintConfig, JAVASCRIPT_FILES, limitRules, testRules } from './eslint.ts';
+import { DEFAULT_LAYOUT, testGlob } from './layout.ts';
 import { LIMITS } from './limits.ts';
 
-/** Lints the code with the limit rules only, and returns the rules that report an error. */
-async function limitMessages(code: string): Promise<(string | null)[]> {
-  const config: Linter.Config = {
-    files: ['**/*.ts'],
-    languageOptions: { parser: tseslint.parser },
-    plugins: { '@typescript-eslint': tseslint.plugin },
-    rules: limitRules,
-  };
-  const eslint = new ESLint({ overrideConfigFile: true, overrideConfig: config });
-  const [result] = await eslint.lintText(code, { filePath: 'fixture.ts' });
-  const errors = result?.messages.filter((message) => message.severity === ERROR) ?? [];
-  return errors.map((message) => message.ruleId);
-}
+const TEST_FILE = 'src/fixture.test.ts';
 
-/** The severity of an ESLint error. */
-const ERROR = 2;
+/** The rules of a test file, as the config combines them. */
+const testFileRules = { ...limitRules, ...testRules };
 
-function lines(count: number, line: string): string {
-  return Array.from({ length: count }, () => line).join('\n');
-}
-
-test('the complexity rule fails above the limit', async () => {
-  const branches = lines(LIMITS.complexity, '  if (a) { b(); }');
-  const code = `function f(a: boolean, b: () => void) {\n${branches}\n}`;
-  expect(await limitMessages(code)).toEqual(['complexity']);
-});
-
-test('the complexity rule passes at the limit', async () => {
-  const branches = lines(LIMITS.complexity - 1, '  if (a) { b(); }');
-  const code = `function f(a: boolean, b: () => void) {\n${branches}\n}`;
-  expect(await limitMessages(code)).toEqual([]);
-});
-
-test('the parameter rule fails above the limit', async () => {
-  const params = Array.from({ length: LIMITS.parameters + 1 }, (_, i) => `p${String(i)}: number`);
-  expect(await limitMessages(`function f(${params.join(', ')}) {}`)).toEqual([
-    '@typescript-eslint/max-params',
-  ]);
-});
-
-test('the nesting rule fails above the limit', async () => {
-  const open = lines(LIMITS.nestingDepth + 1, 'if (a) {');
-  const close = lines(LIMITS.nestingDepth + 1, '}');
-  expect(await limitMessages(`function f(a: boolean) {\n${open}\n${close}\n}`)).toEqual([
-    'max-depth',
-  ]);
-});
-
-test('the function length rule ignores blank lines and comments', async () => {
-  const body = lines(LIMITS.functionLines - 2, '  a();');
-  const padding = `${lines(LIMITS.functionLines, '')}\n${lines(LIMITS.functionLines, '  // note')}`;
-  expect(await limitMessages(`function f(a: () => void) {\n${body}\n${padding}\n}`)).toEqual([]);
-});
-
-test('the function length rule fails above the limit', async () => {
-  const body = lines(LIMITS.functionLines, '  a();');
-  expect(await limitMessages(`function f(a: () => void) {\n${body}\n}`)).toEqual([
-    'max-lines-per-function',
-  ]);
-});
-
-test('the file length rule fails above the limit', async () => {
-  expect(await limitMessages(lines(LIMITS.fileLines + 1, 'export const a = 1;'))).toContain(
-    'max-lines',
+/** The rules of the config entries for the files, merged. */
+function rulesFor(files: readonly string[]) {
+  const entries = frkEslintConfig({ rootDir: '/repo' }).filter((entry) =>
+    isDeepStrictEqual(entry.files, files),
   );
+  return Object.fromEntries(entries.flatMap((entry) => Object.entries(entry.rules ?? {})));
+}
+
+describe('limitRules', () => {
+  it('fails a function above the complexity limit', async () => {
+    const branches = lines(LIMITS.complexity, '  if (a) { b(); }');
+    const code = `function f(a: boolean, b: () => void) {\n${branches}\n}`;
+    expect(await errorRules(code, limitRules)).toEqual(['complexity']);
+  });
+
+  it('passes a function at the complexity limit', async () => {
+    const branches = lines(LIMITS.complexity - 1, '  if (a) { b(); }');
+    const code = `function f(a: boolean, b: () => void) {\n${branches}\n}`;
+    expect(await errorRules(code, limitRules)).toEqual([]);
+  });
+
+  it('fails a function above the parameter limit', async () => {
+    const params = Array.from({ length: LIMITS.parameters + 1 }, (_, i) => `p${String(i)}: number`);
+    expect(await errorRules(`function f(${params.join(', ')}) {}`, limitRules)).toEqual([
+      '@typescript-eslint/max-params',
+    ]);
+  });
+
+  it('fails a function above the nesting limit', async () => {
+    const open = lines(LIMITS.nestingDepth + 1, 'if (a) {');
+    const close = lines(LIMITS.nestingDepth + 1, '}');
+    const code = `function f(a: boolean) {\n${open}\n${close}\n}`;
+    expect(await errorRules(code, limitRules)).toEqual(['max-depth']);
+  });
+
+  it('fails a function above the length limit', async () => {
+    const code = `function f(a: () => void) {\n${lines(LIMITS.functionLines, '  a();')}\n}`;
+    expect(await errorRules(code, limitRules)).toEqual(['frk/max-lines-per-function']);
+  });
+
+  it('fails a file above the length limit', async () => {
+    const code = lines(LIMITS.fileLines + 1, 'export const a = 1;');
+    expect(await errorRules(code, limitRules)).toEqual(['max-lines']);
+  });
+
+  it('leaves out blank lines and comments from the file length', async () => {
+    const code = lines(LIMITS.fileLines, 'export const a = 1;\n\n// note');
+    expect(await errorRules(code, limitRules)).toEqual([]);
+  });
 });
 
-test('the file length rule ignores blank lines and comments', async () => {
-  const code = lines(LIMITS.fileLines, 'export const a = 1;\n\n// note');
-  expect(await limitMessages(code)).toEqual([]);
+describe('testRules', () => {
+  /** A test file with 1 section of the number of code lines. */
+  function sectionOf(codeLines: number): string {
+    return `describe('name', () => {\n${lines(codeLines - 2, "  it('works', () => {});")}\n});`;
+  }
+
+  it('passes a test file at its own length limit', async () => {
+    const code = sectionOf(LIMITS.testFileLines);
+    expect(await errorRules(code, testFileRules, TEST_FILE)).toEqual([]);
+  });
+
+  it('fails a test file above its own length limit', async () => {
+    const code = sectionOf(LIMITS.testFileLines + 1);
+    expect(await errorRules(code, testFileRules, TEST_FILE)).toEqual(['max-lines']);
+  });
+
+  it('fails a test outside a section', async () => {
+    expect(await errorRules("it('works', () => {});", testFileRules, TEST_FILE)).toEqual([
+      'vitest/require-top-level-describe',
+    ]);
+  });
+
+  it('fails sections nested deeper than the limit', async () => {
+    const open = lines(LIMITS.testSectionDepth + 1, "describe('name', () => {");
+    const close = lines(LIMITS.testSectionDepth + 1, '});');
+    const code = `${open}\nit('works', () => {});\n${close}`;
+    expect(await errorRules(code, testFileRules, TEST_FILE)).toEqual(['vitest/max-nested-describe']);
+  });
+
+  it('asks for `it` in place of `test` inside a section', async () => {
+    const code = "describe('name', () => {\n  test('works', () => {});\n});";
+    expect(await errorRules(code, testFileRules, TEST_FILE)).toEqual(['vitest/consistent-test-it']);
+  });
 });
 
-test('the JavaScript globs cover all module kinds', () => {
-  expect(JAVASCRIPT_FILES).toEqual(['**/*.js', '**/*.mjs', '**/*.cjs']);
+describe('frkEslintConfig', () => {
+  it('ignores the build folders', () => {
+    const ignores = frkEslintConfig({ rootDir: '/repo' }).flatMap((entry) => entry.ignores ?? []);
+    expect(ignores).toEqual(['dist/', 'coverage/', 'reports/', '.stryker-tmp/']);
+  });
+
+  it('reads the tsconfig of the root folder', () => {
+    const config = frkEslintConfig({ rootDir: '/repo' });
+    const options = config.map((entry) => entry.languageOptions?.['parserOptions']);
+    expect(options).toContainEqual({ projectService: true, tsconfigRootDir: '/repo' });
+  });
+
+  it('turns type-aware rules off for JavaScript files', () => {
+    expect(JAVASCRIPT_FILES).toEqual(['**/*.js', '**/*.mjs', '**/*.cjs']);
+    expect(rulesFor(JAVASCRIPT_FILES)).toMatchObject({ '@typescript-eslint/await-thenable': 'off' });
+  });
+
+  it('adds the test rules and the Vitest rules for test files', () => {
+    const rules = rulesFor([testGlob(DEFAULT_LAYOUT)]);
+    expect(rules).toMatchObject(testRules);
+    expect(rules).toMatchObject({ 'vitest/expect-expect': 'error' });
+  });
 });
 
-test('frkEslintConfig ignores the build folders and sets the root folder', () => {
-  const config = frkEslintConfig({ rootDir: '/repo' });
-  const ignores = config.flatMap((entry) => entry.ignores ?? []);
-  expect(ignores).toEqual(DEFAULT_LAYOUT.ignoredDirs.map((dir) => `${dir}/`));
-  const options = config.map((entry) => entry.languageOptions?.['parserOptions']);
-  expect(options).toContainEqual({ projectService: true, tsconfigRootDir: '/repo' });
-});
+describe('frkEslintConfig on the files of this package', () => {
+  const rootDir = join(import.meta.dirname, '..');
 
-test('frkEslintConfig turns type-aware rules off for JavaScript files', () => {
-  const config = frkEslintConfig({ rootDir: '/repo' });
-  const jsEntries = config.filter((entry) => isDeepStrictEqual(entry.files, JAVASCRIPT_FILES));
-  const jsRules = Object.fromEntries(jsEntries.flatMap((entry) => Object.entries(entry.rules ?? {})));
-  expect(jsRules).toMatchObject({ '@typescript-eslint/await-thenable': 'off' });
+  /** Lints the code as the content of a file of this package, with the full config. */
+  async function fullConfigRules(code: string, file: string): Promise<(string | null)[]> {
+    const overrideConfig = frkEslintConfig({ rootDir });
+    const eslint = new ESLint({ cwd: rootDir, overrideConfigFile: true, overrideConfig });
+    const [result] = await eslint.lintText(code, { filePath: join(rootDir, file) });
+    return result?.messages.map((message) => message.ruleId) ?? [];
+  }
+
+  it('checks the function length in a source file', async () => {
+    const code = `export function f(a: () => void): void {\n${lines(LIMITS.functionLines, '  a();')}\n}\n`;
+    expect(await fullConfigRules(code, 'src/limits.ts')).toEqual(['frk/max-lines-per-function']);
+  });
+
+  it('checks the sections in a test file', async () => {
+    const code = "import { expect, it } from 'vitest';\n\nit('works', () => {\n  expect(1).toBe(1);\n});\n";
+    expect(await fullConfigRules(code, 'src/layout.test.ts')).toEqual([
+      'vitest/require-top-level-describe',
+    ]);
+  });
 });

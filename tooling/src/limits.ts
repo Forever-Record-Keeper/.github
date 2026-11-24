@@ -1,5 +1,5 @@
 /**
- * The limits of decision 0009 in the specs repo.
+ * The limits of decision 0030 in the specs repo.
  * Each shared config and each command reads its limit from this file.
  */
 export const LIMITS = {
@@ -9,6 +9,10 @@ export const LIMITS = {
   functionLines: 25,
   /** The most lines of a file, without blank lines and comments. */
   fileLines: 200,
+  /** The most lines of a test file, without blank lines and comments. */
+  testFileLines: 500,
+  /** The deepest nesting of `describe` sections in a test file. */
+  testSectionDepth: 2,
   /** The deepest nesting of blocks in a function. */
   nestingDepth: 3,
   /** The most parameters of a function. */
