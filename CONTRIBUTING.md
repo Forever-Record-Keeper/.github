@@ -6,16 +6,9 @@ The guide applies to every repo of the organization.
 
 ## The repos
 
-| Repo | Content |
-| --- | --- |
-| `.github` | Community files, shared workflows and the Vale package for prose checks |
-| `specs` | Plans, requirements, decisions and the glossary. No product code. |
-| `app` | The desktop app: recording control, log tagging and the library |
-| `addon` | The addon for the game client |
-| `docs` | User and contributor docs |
-| `forever-record-keeper.github.io` | The project website |
+The [repo list of the organization](https://github.com/orgs/Forever-Record-Keeper/repositories) shows each repo with a short description.
 
-Clone the repos side by side in one folder.
+Clone all available repos side by side in the same folder.
 Scripts and settings find each other through relative paths such as `../specs`.
 
 ## 2 ways to change the project
@@ -67,6 +60,8 @@ Vale checks all text that people read: Markdown files, code comments, UI text an
 12. Write headings in sentence case.
 13. In a requirement, use only words that a test can check.
     Words such as `fast`, `easy` and `if possible` have no value to test.
+14. Don't write facts that go stale, such as the number of repos or who is a collaborator today.
+    Link to a source that always shows the current state, such as the repo list of the organization.
 
 Use US spelling.
 The `README.md` of this repo explains how Vale checks these rules.

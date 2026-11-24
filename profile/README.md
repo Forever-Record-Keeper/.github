@@ -17,14 +17,8 @@ A library on your local network plays the video next to the log, and links each 
 
 ## Repos
 
-| Repo | Content |
-| --- | --- |
-| [`specs`](https://github.com/Forever-Record-Keeper/specs) | Plans, requirements and decisions |
-| [`app`](https://github.com/Forever-Record-Keeper/app) | The desktop app |
-| [`addon`](https://github.com/Forever-Record-Keeper/addon) | The addon for the game client |
-| [`docs`](https://github.com/Forever-Record-Keeper/docs) | User and contributor docs |
-| [`forever-record-keeper.github.io`](https://github.com/Forever-Record-Keeper/forever-record-keeper.github.io) | The project website |
-| [`.github`](https://github.com/Forever-Record-Keeper/.github) | Community files and shared workflows |
+The [repo list](https://github.com/orgs/Forever-Record-Keeper/repositories) shows each repo of the project with a short description.
+Start with [`specs`](https://github.com/Forever-Record-Keeper/specs) for the plans, requirements and decisions.
 
 ## Take part
 
