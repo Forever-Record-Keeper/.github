@@ -3,6 +3,7 @@
 This repo contains the files that all Forever Record Keeper repos share:
 
 - The `FRK` Vale package in `vale/FRK`, with the prose rules for every repo.
+- The npm package `@forever-record-keeper/tooling` in `tooling`, with the shared checks and configurations for TypeScript.
 - Reusable GitHub Actions workflows in `.github/workflows`.
 
 ## The FRK Vale package
@@ -52,6 +53,11 @@ The workflow installs Vale, syncs the packages and checks the repo.
 An alert at the error level fails the check.
 The default of the `vale-version` input sets the Vale version for all repos.
 Install the same version on your machine, for example with `winget install errata-ai.Vale` on Windows.
+
+## The tooling package
+
+[tooling/README.md](tooling/README.md) explains the shared checks for TypeScript and how a repo uses them.
+The shared workflow `typescript.yml` runs the checks.
 
 ## License
 

@@ -90,16 +90,12 @@ The `CODEOWNERS` file of each repo marks these paths.
 ## Checks
 
 Each repo runs its checks in CI, and the same checks run in a hook before each commit.
-For TypeScript, the checks include these limits:
+Every check must pass, and the prose check allows no Vale error.
 
-| Check | Limit |
-| --- | --- |
-| Complexity of a function | 6 or less |
-| Length of a function | 25 lines or less |
-| Length of a file | 200 lines or less |
-| Test coverage | 90% of lines and branches |
-| Mutation score | 85% or more on changed files |
-| Prose | No Vale errors |
+For TypeScript, decision 0030 in `specs` sets the limits for complexity, length, nesting, parameters, coverage, mutation score and duplication.
+The checks read these limits from [`tooling/src/limits.ts`](tooling/src/limits.ts).
+Each test is in a `describe` section and has a short title.
+A test file then reads as a list of behaviors.
 
 The README of each repo lists all its checks.
 
