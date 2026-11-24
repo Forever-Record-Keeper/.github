@@ -92,7 +92,7 @@ The `CODEOWNERS` file of each repo marks these paths.
 Each repo runs its checks in CI, and the same checks run in a hook before each commit.
 Every check must pass, and the prose check allows no Vale error.
 
-For TypeScript, decision 0030 in `specs` sets the limits for complexity, length, nesting, parameters, coverage, mutation score and duplication.
+For TypeScript, decision 0009 in `specs` sets the limits for complexity, length, nesting, parameters, coverage, mutation score and duplication.
 The checks read these limits from [`tooling/src/limits.ts`](tooling/src/limits.ts).
 Each test is in a `describe` section and has a short title.
 A test file then reads as a list of behaviors.

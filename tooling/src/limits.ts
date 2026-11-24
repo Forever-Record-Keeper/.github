@@ -1,5 +1,5 @@
 /**
- * The limits of decision 0030 in the specs repo.
+ * The limits of decision 0009 in the specs repo.
  * Each shared config and each command reads its limit from this file.
  */
 export const LIMITS = {

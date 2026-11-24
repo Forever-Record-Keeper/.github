@@ -20,7 +20,7 @@ export interface EslintOptions {
 /** Blank lines and comments don't count toward a length limit. */
 const COUNT_CODE_ONLY = { skipBlankLines: true, skipComments: true };
 
-/** The size and complexity rules of decision 0030. */
+/** The size and complexity rules of decision 0009. */
 export const limitRules: Linter.RulesRecord = {
   complexity: ['error', { max: LIMITS.complexity }],
   'max-depth': ['error', { max: LIMITS.nestingDepth }],
@@ -32,7 +32,7 @@ export const limitRules: Linter.RulesRecord = {
 };
 
 /**
- * The rules for test files of decision 0030.
+ * The rules for test files of decision 0009.
  * Tests sit in `describe` sections. The function length rule skips the section callbacks.
  */
 export const testRules: Linter.RulesRecord = {

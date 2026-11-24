@@ -52,7 +52,7 @@ interface LengthOptions {
 }
 
 /**
- * The function length rule of decision 0030: lines of code per function.
+ * The function length rule of decision 0009: lines of code per function.
  * A section holds many tests, so its callback has no limit. Each test inside keeps the limit.
  */
 const maxLinesPerFunction: Rule.RuleModule = {

@@ -1,7 +1,7 @@
 # Tooling of Forever Record Keeper
 
 The npm package `@forever-record-keeper/tooling` holds the shared checks and configurations for the TypeScript repos of the project.
-Decision 0030 in the `specs` repo sets the limits.
+Decision 0009 in the `specs` repo sets the limits.
 `src/limits.ts` holds them, and each configuration and command reads them from there.
 
 ## Contents
@@ -12,7 +12,7 @@ Decision 0030 in the `specs` repo sets the limits.
 | `@forever-record-keeper/tooling/vitest` | `frkVitestConfig`: tests next to the code, and the coverage limit for lines and branches. |
 | `@forever-record-keeper/tooling/stryker` | `frkStrykerConfig`: mutation tests with Vitest and the type checker, and the mutation limit. |
 | `@forever-record-keeper/tooling/dependency-cruiser` | `frkDependencyCruiserConfig`: no cycles and no unresolved imports, plus the layer rules of the repo. |
-| `@forever-record-keeper/tooling/limits` | `LIMITS`: the limits of decision 0030. |
+| `@forever-record-keeper/tooling/limits` | `LIMITS`: the limits of decision 0009. |
 | `@forever-record-keeper/tooling/tsconfig.base.json` | The strict compiler options for all TypeScript code. |
 
 Each configuration function takes an optional `Layout` for a repo with other folders.
