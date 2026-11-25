@@ -71,6 +71,10 @@ The `README.md` of this repo explains how Vale checks these rules.
 - Write commit messages and PR titles as Conventional Commits, for example `fix: keep the clip folder when the disk is full`.
 - Make each PR small.
   Each PR passes its own checks.
+- Start each PR from `main` and target `main`.
+  A PR that needs an open PR waits for its merge, or both become [stacked PRs](https://docs.github.com/en/pull-requests/reference/stacked-pull-requests) on GitHub.
+  Outside a stack, don't target the branch of another PR.
+  Decision 0031 in `specs` explains why.
 - The project merges with squash merge.
   The PR title becomes the commit message on `main`.
 - Commits need no sign-off line.
